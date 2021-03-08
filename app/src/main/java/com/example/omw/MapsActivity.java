@@ -2,11 +2,15 @@ package com.example.omw;
 
 import android.Manifest;
 import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,8 +43,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private float RADIUS = 200;
     private String GEO_ID = "GEOFENCE ID";
 
-    private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
-    private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE= 10002;
+    private final int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
+    private final int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
+    private Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +58,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         geofencingClient = LocationServices.getGeofencingClient(this);
         geofenceHelper = new GeofenceHelper(this);
+        button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                openMenu();
+            }
+        });
+
+        SharedPreferences preferences = getSharedPreferences("Sprefrences", MODE_PRIVATE);
+        boolean firstStart = preferences.getBoolean("firstStart", true);
+
+        if (firstStart) {
+            openFirst_Password();
+        }else {
+            return;
+        }
+    }
+
+    //כניסה ראשונה לאפליקציה קביעת סיסמה *להמשיך לעצב את FirstEntry
+    public void openFirst_Password() {
+        SharedPreferences preferences = getSharedPreferences("Sprefrences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("firstStart", false);
+        editor.apply();
+
+        Intent intent = new Intent(this, FirstEntryActivity.class);
+        startActivity(intent);
+    }
+
+    public void openMenu() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -70,6 +108,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // מזיז את המצלמה ועושה זום לשרונה
         LatLng sarona = new LatLng(32.0718, 34.7848);
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sarona, 16));
 
         enableUserLocation();

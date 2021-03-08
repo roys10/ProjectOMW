@@ -1,6 +1,7 @@
 package com.example.omw;
 
 //להסתכל על סרטון ביוטיוב בערוץ yoursTruly על notifications
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -8,12 +9,17 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
+import android.telephony.SmsManager;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.Random;
 
@@ -63,6 +69,29 @@ public class NotificationHelper extends ContextWrapper {
 
     }
 
+
+    SharedPreferences sharedPreferences = getSharedPreferences("phoneNum",MODE_PRIVATE);
+    String phoneNum= sharedPreferences.getString("phoneNum","");
+    public void sendSMS(String message){
+        if(phoneNum.length()!= 10){
+            Toast.makeText(this, "Please enter valid phone number!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(checkPremission(Manifest.permission.SEND_SMS)){
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phoneNum,null,message, null,null);
+            Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this, "Failed to send", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public boolean checkPremission(String premission){
+        int check = ContextCompat.checkSelfPermission(this,premission);
+        return (check == PackageManager.PERMISSION_GRANTED);
+    }
 }
 
 
