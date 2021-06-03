@@ -1,6 +1,7 @@
 package com.example.omw;
 
 //להסתכל על סרטון ביוטיוב בערוץ yoursTruly על notifications
+
 import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -26,6 +27,10 @@ import java.util.Random;
 public class NotificationHelper extends ContextWrapper {
 
     private static final String TAG = "NotificationHelper";
+    private final String CHANNEL_NAME = "High priority channel";
+    private final String CHANNEL_ID = "com.example.notifications" + CHANNEL_NAME;
+    SharedPreferences sharedPreferences = getSharedPreferences("pref", MODE_PRIVATE);
+    String phoneNum = sharedPreferences.getString("phoneNum", "");
 
     public NotificationHelper(Context base) {
         super(base);
@@ -33,9 +38,6 @@ public class NotificationHelper extends ContextWrapper {
             createChannels();
         }
     }
-
-    private String CHANNEL_NAME = "High priority channel";
-    private String CHANNEL_ID = "com.example.notifications" + CHANNEL_NAME;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createChannels() {
@@ -63,33 +65,26 @@ public class NotificationHelper extends ContextWrapper {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .build();
-
         NotificationManagerCompat.from(this).notify(new Random().nextInt(), notification);
-
-
     }
 
-
-    SharedPreferences sharedPreferences = getSharedPreferences("phoneNum",MODE_PRIVATE);
-    String phoneNum= sharedPreferences.getString("phoneNum","");
-    public void sendSMS(String message){
-        if(phoneNum.length()!= 10){
+    public void sendSMS(String message) {
+        if (phoneNum.length() != 10) {
             Toast.makeText(this, "Please enter valid phone number!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if(checkPremission(Manifest.permission.SEND_SMS)){
+        if (checkPermission(Manifest.permission.SEND_SMS)) {
             SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(phoneNum,null,message, null,null);
+            smsManager.sendTextMessage(phoneNum, null, message, null, null);
             Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
             Toast.makeText(this, "Failed to send", Toast.LENGTH_SHORT).show();
         }
-
     }
 
-    public boolean checkPremission(String premission){
-        int check = ContextCompat.checkSelfPermission(this,premission);
+    public boolean checkPermission(String permission) {
+        int check = ContextCompat.checkSelfPermission(this, permission);
         return (check == PackageManager.PERMISSION_GRANTED);
     }
 }

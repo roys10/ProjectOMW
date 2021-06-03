@@ -19,28 +19,28 @@ public class GeofenceHelper extends ContextWrapper {
         super(base);
     }
 
-    public GeofencingRequest getGeofencingRequest(Geofence geofence){
+    public GeofencingRequest getGeofencingRequest(Geofence geofence) {
         return new GeofencingRequest.Builder().addGeofence(geofence).setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER).build();
     }
 
-    public Geofence getGeofence(String id, LatLng latlng, float radius, int transitionTypes ){
+    public Geofence getGeofence(String id, LatLng latlng, float radius, int transitionTypes) {
 
         return new Geofence.Builder().setCircularRegion(latlng.latitude, latlng.longitude, radius).setRequestId(id).setTransitionTypes(transitionTypes).setLoiteringDelay(5000).setExpirationDuration(Geofence.NEVER_EXPIRE).build();
     }
 
-    public PendingIntent getPendingIntent(){
-        if (pi!=null){
+    public PendingIntent getPendingIntent() {
+        if (pi != null) {
             return pi;
         }
-        Intent intent= new Intent(this, GeofenceBroadcastReceiver.class);
-        pi=PendingIntent.getBroadcast(this, 2607, intent, PendingIntent.FLAG_UPDATE_CURRENT );
-        return  pi;
+        Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
+        pi = PendingIntent.getBroadcast(this, 2607, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return pi;
     }
 
-    public String getErrorString(Exception e){
-        if(e instanceof ApiException){
-            ApiException apiException= (ApiException) e;
-            switch (apiException.getStatusCode()){
+    public String getErrorString(Exception e) {
+        if (e instanceof ApiException) {
+            ApiException apiException = (ApiException) e;
+            switch (apiException.getStatusCode()) {
                 case GeofenceStatusCodes
                         .GEOFENCE_NOT_AVAILABLE:
                     return "GEOFENCE_NOT_AVAILABLE";
@@ -52,7 +52,6 @@ public class GeofenceHelper extends ContextWrapper {
                     return "GEOFENCE_TOO_MANY_PENDING_INTENTS";
             }
         }
-        return  e.getLocalizedMessage();
+        return e.getLocalizedMessage();
     }
-
 }
