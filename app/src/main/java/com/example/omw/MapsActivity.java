@@ -92,7 +92,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MapsActivity.this, DataActivity.class);
+                Intent intent = new Intent(MapsActivity.this, ExplanationActivity.class);
                 startActivity(intent);
             }
         });
@@ -113,7 +113,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void openMenu() {
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(this, DataActivity.class);
         startActivity(intent);
     }
 
