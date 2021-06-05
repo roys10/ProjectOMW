@@ -47,15 +47,10 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
                 notificationHelper.sendHighPriorityNotification("ENTER", "", MapsActivity.class);
 
                 break;
-            //זו הודעה על שהייה כרגע לא רלוונטית אולי בהמשך אפשרות לשליחת הודעה לאחר שהייה במשך זמן מסוים
-            // case Geofence.GEOFENCE_TRANSITION_DWELL:
-            //  Toast.makeText(context, "GEOFENCE_TRANSITION_DWELL", Toast.LENGTH_SHORT).show();
-            // notificationHelper.sendSMS("user dwelling zone");
-            // notificationHelper.sendHighPriorityNotification("DWELL","", MapsActivity.class);
-            //break;
+
             case Geofence.GEOFENCE_TRANSITION_EXIT:
                 Toast.makeText(context, "GEOFENCE_TRANSITION_EXIT", Toast.LENGTH_SHORT).show();
-                notificationHelper.sendSMS("user exited zone");
+                notificationHelper.sendSMS("user exited zone"+latLng.latitude+" : "+latLng.longitude);
                 notificationHelper.sendHighPriorityNotification("EXIT", "", MapsActivity.class);
                 break;
         }
